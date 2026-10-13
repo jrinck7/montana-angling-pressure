@@ -1,0 +1,13 @@
+# Rebuild Project1.pdf with zero page margins
+# Paste this whole block into your terminal, inside the Project1 folder, and press Enter.
+# To change the margin size, edit the MARGIN value below before pasting (e.g. 0.25in).
+
+MARGIN="0.5in"
+
+jupyter nbconvert --to latex Project2_Launch_JansenRinck.ipynb && \
+sed -i "s/\\\\geometry{verbose,tmargin=[^}]*}/\\\\geometry{verbose,tmargin=${MARGIN},bmargin=${MARGIN},lmargin=${MARGIN},rmargin=${MARGIN}}/" Project2_Launch_JansenRinck.tex && \
+rm -f Project2_Launch_JansenRinck.aux Project2_Launch_JansenRinck.out Project2_Launch_JansenRinck.toc && \
+xelatex -interaction=nonstopmode Project2_Launch_JansenRinck.tex && \
+xelatex -interaction=nonstopmode Project2_Launch_JansenRinck.tex && \
+xelatex -interaction=nonstopmode Project2_Launch_JansenRinck.tex && \
+echo "Done. Project2_JansenRinck.pdf rebuilt with margins set to ${MARGIN}."

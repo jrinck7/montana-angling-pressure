@@ -1,0 +1,1291 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Project1}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=0.5in,bmargin=0.5in,lmargin=0.5in,rmargin=0.5in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{a-river-runs-through-covid-19}{%
+\section{A River Runs through
+COVID-19:}\label{a-river-runs-through-covid-19}}
+
+\hypertarget{how-the-pandemic-redistributed-angling-pressure-across-montana}{%
+\subsubsection{How the Pandemic Redistributed Angling Pressure Across
+Montana}\label{how-the-pandemic-redistributed-angling-pressure-across-montana}}
+
+    \hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Almost everyone experienced something out of the ordinary during the
+onset of the 2020 pandemic, and Montana's waterways were no exception.
+Montana saw approximately a 28\% increase in angling pressure across the
+state, but where did those increases happen? That is what I will explore
+through this geospatial analysis. I hypothesized that this increase did
+not impact rivers uniformly, but concentrated to rivers that were less
+popular pre-pandemic. Data collected by Fish, Wildlife, and Parks from
+the angling surveys covers the fishing license year (March -- February);
+I will be looking at license years 2019 and 2020 for this analysis. Data
+brought in from the Montana State Library was in the Coordinate
+Reference System (CRS) EPSG:6514, projected to NAD83(2011)/Montana State
+Plane; all layers were exported and reprojected to this CRS and
+projection system for this analysis.
+
+FWP's angling pressure metric is calculated using the following:
+
+\[
+P_j = \sum_{i=1}^{n} \frac{E_{ij}}{R_{ij}} \cdot D_{ij} \cdot A_{ij}
+\]
+
+where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(P_j\) = pressure for an individual water by the \(j\)th residency
+\item
+  \(E_{ij}\) = number of eligible anglers for the \(i\)th wave and
+  \(j\)th residency
+\item
+  \(D_{ij}\) = days fished on that particular water for the \(i\)th wave
+  and \(j\)th residency
+\item
+  \(R_{ij}\) = number of respondents from the survey for the \(i\)th
+  wave and \(j\)th residency
+\item
+  \(A_{ij}\) = adjustment factor for non-response for the \(i\)th wave
+  and \(j\)th residency
+\item
+  \(n\) = number of waves in the estimate year or season
+\item
+  \(j\) = residency type (resident, nonresident, or total)
+\end{itemize}
+
+For this analysis, I combined the \(P_j\) (resident) and \(P_j\)
+(non-resident) metrics to examine overall fishing pressure for the state
+of Montana.
+
+    \hypertarget{original-hypothesis}{%
+\subsection{Original Hypothesis:}\label{original-hypothesis}}
+
+During the onset of the COVID-19 pandemic in 2020, angling pressure from
+residents and non-residents became more dispersed across rivers, with
+angling pressure increasing on less-popular rivers compared to 2019.
+
+    \hypertarget{refined-research-question}{%
+\subsection{Refined Research Question}\label{refined-research-question}}
+
+Did 2020 angling pressure increases concentrate on rivers that were
+already popular in 2019, independent of their distance from population
+centers?
+
+    \hypertarget{data-sources}{%
+\subsection{Data Sources}\label{data-sources}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Montana State Library:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \href{https://msl.mt.gov/geoinfo/msdi/administrative_boundaries/}{Cities}
+  \item
+    \href{https://msl.mt.gov/geoinfo/water_information_system/nhd_high_resolution_data_download}{Lakes}
+  \item
+    \href{https://msl.mt.gov/geoinfo/water_information_system/nhd_high_resolution_data_download}{Streams}
+  \item
+    \href{https://msl.mt.gov/geoinfo/msdi/administrative_boundaries/}{State
+    Boundary}
+  \end{itemize}
+\item
+  Fish, Wildlife \& Parks
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \href{https://fwp.mt.gov/fish/pressure-surveys}{Statewide Angling
+    Pressure Summary Reports (2019, 2020)}
+  \item
+    \href{https://fwp-gis.mt.gov/arcgis/rest/services/fish/fishViewer/MapServer/66}{Statewide
+    Fisheries Management Plan Drainage Boundaries}
+  \item
+    \href{https://gis-mtfwp.hub.arcgis.com/datasets/40c5d0eafa9343249239b71cbd4e95b6_0/explore?location=46.831007\%2C-109.511871\%2C6}{Fishing
+    Access Points}
+  \end{itemize}
+\end{enumerate}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Import libraries for this notebook}
+\PY{k+kn}{import} \PY{n+nn}{geopandas} \PY{k}{as} \PY{n+nn}{gpd}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{patheffects} \PY{k}{as} \PY{n+nn}{pe}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{colors} \PY{k}{as} \PY{n+nn}{mcolors}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{patches} \PY{k}{as} \PY{n+nn}{mpatches}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{cm} \PY{k}{as} \PY{n+nn}{cm}
+\PY{k+kn}{from} \PY{n+nn}{mpl\PYZus{}toolkits}\PY{n+nn}{.}\PY{n+nn}{axes\PYZus{}grid1}\PY{n+nn}{.}\PY{n+nn}{inset\PYZus{}locator} \PY{k+kn}{import} \PY{n}{inset\PYZus{}axes}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{from} \PY{n+nn}{PIL} \PY{k+kn}{import} \PY{n}{Image}
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{c+c1}{\PYZsh{} Keep errors from displaying}
+\PY{n}{os}\PY{o}{.}\PY{n}{environ}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{PROJ\PYZus{}LIB}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{/opt/conda/envs/gds/share/proj}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{c+c1}{\PYZsh{} Read in geopackage}
+\PY{n}{df} \PY{o}{=} \PY{n}{gpd}\PY{o}{.}\PY{n}{read\PYZus{}file}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../Data/project1\PYZus{}pythondata.gpkg}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{statewide-view}{%
+\subsection{Statewide View}\label{statewide-view}}
+
+\includegraphics{/home/jovyan/work/Project1/Figures/2020_access_pctchange.png}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Open the two QGIS map exports so we can combine them into one image}
+\PY{n}{img1} \PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../Figures/2019\PYZus{}access.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{img2} \PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../Figures/2020\PYZus{}access.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Figure out how big the combined canvas needs to be: wide enough for both images side by side, tall enough for the taller one}
+\PY{n}{total\PYZus{}width} \PY{o}{=} \PY{n}{img1}\PY{o}{.}\PY{n}{width} \PY{o}{+} \PY{n}{img2}\PY{o}{.}\PY{n}{width}
+\PY{n}{max\PYZus{}height} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{img1}\PY{o}{.}\PY{n}{height}\PY{p}{,} \PY{n}{img2}\PY{o}{.}\PY{n}{height}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Create a blank white canvas of that size to paste both images onto}
+\PY{n}{combined} \PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{new}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{RGB}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{p}{(}\PY{n}{total\PYZus{}width}\PY{p}{,} \PY{n}{max\PYZus{}height}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Paste the 2019 map at the left edge of the canvas}
+\PY{n}{combined}\PY{o}{.}\PY{n}{paste}\PY{p}{(}\PY{n}{img1}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Paste the 2020 map directly to the right of the first one}
+\PY{n}{combined}\PY{o}{.}\PY{n}{paste}\PY{p}{(}\PY{n}{img2}\PY{p}{,} \PY{p}{(}\PY{n}{img1}\PY{o}{.}\PY{n}{width}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}
+\PY{n}{combined}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{2}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Project1_files/Project1_7_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    View 1 (Top). Side-by-side statewide map view of the angling pressure
+per FWP fishing access point (days/access point) for 2019 and 2020 for
+Montana rivers. In both maps, line color and thickness scale together
+with pressure: pale, thin lines indicate low pressure, and dark, thick
+lines indicate high pressure.
+
+View 1 (Bottom). Statewide map view of the change in angling pressure
+per FWP fishing access point (days/access point) from 2019 to 2020 for
+Montana rivers. Line color indicates the direction of change - blue for
+a decrease, and red for an increase. The thickness of the lines
+indicates the magnitude of the change (independent of the direction of
+change) - thick lines indicating the largest change, and thin lines
+representing little or no change. Rivers with six or fewer access points
+are shown in gray, and rivers with no access data are displayed with a
+dashed line.
+
+    \hypertarget{discussion}{%
+\subsubsection{Discussion}\label{discussion}}
+
+This first view examines how angling pressure changed per fishing access
+point between 2019 and 2020, normalizing by access count rather than
+river length.
+
+The Upper Missouri fell below the threshold of six access points I set
+for this analysis (more on that below in the data processing section);
+however, it still showed a very large increase in angling pressure
+(+125\%). It is clear that this stretch of water, while relatively
+short, is very popular. Due to its short length and low access count,
+this ratio is more sensitive to single trips than longer rivers with
+more access points - one additional trip has a larger impact on the
+average when the denominator is small.
+
+Looking at the map above, it is apparent that this normalization
+highlights geospatial trends that a simpler metric might obscure. The
+Jefferson River increased by 83\% under this access-point metric - a
+notably large jump. The Jefferson River and the Beaverhead River both
+showed the largest increases in angling pressure per access point. Is
+this a trend that indicates some truth behind my hypothesis?
+
+    \hypertarget{data-processing}{%
+\subsubsection{Data Processing}\label{data-processing}}
+
+To normalize Montana streams by FWP fishing access points, I first had
+to filter the raw access site data down to points actually located along
+the rivers examined in this analysis, since the dataset also includes
+points on lakes and reservoirs. Matching each point to its corresponding
+river turned out to be difficult - the access point data didn't have a
+field that specified what river or waterbody each point lies on, so I
+resolved this by classifying each point by proximity, comparing its
+distance to the nearest river. Once that data was classified and parsed,
+I used the ``Statistics by Category'' tool to group the points by
+individual river and get counts for each. With the access point count
+joined back onto the stream data I appended the count as a new attribute
+based on the shared river name field - I use this same join method
+throughout this analysis. I calculated angling days per access point for
+each river in 2019 and 2020, then found the percent change between the
+two years. Looking at the resulting percentages, it was clear there was
+a steep drop-off in pressure metrics for rivers that had fewer than six
+access points, so I excluded rivers below that threshold for this part
+of the analysis.
+
+    \includegraphics{/home/jovyan/work/Project1/Figures/Angling_Pressure_Overview.png}
+
+    View 2: Statewide map view of the change in angling pressure per stream
+mile (days/mi) from 2019 to 2020 for Montana rivers. Line color
+indicates the direction of change - blue for a decrease and red for an
+increase. The thickness of the lines represents the magnitude of the
+change - thick lines are for the largest increases/decreases while the
+thinnest lines represent little or no change.
+### Discussion - First Iteration
+
+Based on the results above, it doesn't look like my original hypothesis held true. Rivers farther from population centers don't appear to have received a disproportionate amount of angling pressure compared to rivers closer to dense populations. In fact, it looks like the opposite in places - the Bitterroot, Blackfoot, Gallatin, and Big Hole all sit near Missoula and Bozeman and all show large per-mile increases. This pattern of geographic clustering in southwestern Montana would lead me to believe that lockdown measures kept people closer to home and anglers didn't travel as much in 2020.
+
+There are several outliers that immediately stand out. The river that received the most pressure (Upper Missouri) isn't near a population center and posted the largest increase in angling pressure from 2019 to 2020. On the contrary, the Bighorn is an outlier in the other direction, experiencing a large decrease, possibly due to its relatively remote location. This suggests that anglers favored rivers they could easily drive to in a day. 
+
+### Data Processing
+
+One of the data processing challenges I had to navigate was removing sections of river centerline that ran through lakes and reservoirs. Fish, Wildlife & Parks reports lake and stream pressure separately, so leaving those sections in would have counted areas the pressure numbers don't cover. I removed the sections intersecting lakes and reservoirs and recalculated each river's length accordingly. The Upper Missouri lost 51% of its length to Canyon Ferry, Hauser, and Holter, moving its value from 610 to 1,254 angling days per mile. The Lower Clark Fork lost 57% to Noxon Reservoir and Cabinet Gorge.
+
+To normalize the data, I joined the 2019 and 2020 stream pressure metrics to the stream layer - appending the fields of one table to those of another based on a common attribute - then calculated angling days per river mile for each year, and added a third field taking the difference between them.
+
+One thing that's important to note about the angling pressure metric is that it's reported by the entire drainage rather than the individual water; therefore, I assigned each drainage's stream pressure to its main stem - so tributary pressure is counted on the main stem as well.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Get river length\PYZsq{}s that are not null}
+\PY{n}{plot\PYZus{}river} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{seg\PYZus{}miles}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{notna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Sort lengths ascending}
+\PY{n}{plot\PYZus{}river} \PY{o}{=} \PY{n}{plot\PYZus{}river}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{seg\PYZus{}miles}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}Create a bar chart \PYZhy{} plot river and length}
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{n}{plot\PYZus{}river}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{plot\PYZus{}river}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{seg\PYZus{}miles}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}4393C3}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mf}{0.85}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Length (miles)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{River Length by Watershed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{margins}\PY{p}{(}\PY{n}{y}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Project1_files/Project1_14_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Figure 1. Trimmed river length (miles) by Montana drainage.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Calculate the 75th percentile of a column and return the top 25\PYZpc{}}
+\PY{k}{def} \PY{n+nf}{split\PYZus{}by\PYZus{}quartile}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{column}\PY{p}{)}\PY{p}{:}
+    \PY{n}{q3} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{quantile}\PY{p}{(}\PY{l+m+mf}{0.75}\PY{p}{)}
+    \PY{n}{upper\PYZus{}quartile} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{p}{[}\PY{n}{column}\PY{p}{]} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{n}{q3}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+    \PY{k}{return} \PY{n}{upper\PYZus{}quartile}
+    
+\PY{c+c1}{\PYZsh{} Build the bar chart data}
+\PY{n}{plot\PYZus{}data} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{notna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}data} \PY{o}{=} \PY{n}{plot\PYZus{}data}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{upper\PYZus{}quartile} \PY{o}{=} \PY{n}{split\PYZus{}by\PYZus{}quartile}\PY{p}{(}\PY{n}{plot\PYZus{}data}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Build table data}
+\PY{n}{table\PYZus{}data\PYZus{}permile} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}permile} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Name the table columns}
+\PY{n}{table\PYZus{}data\PYZus{}permile} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{p}{[}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{seg\PYZus{}miles}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}mi\PYZus{}19}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}mi\PYZus{}20}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{seg\PYZus{}miles}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Segment Distance}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}mi\PYZus{}19}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 Pressure (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}mi\PYZus{}20}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2020 Pressure (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Pressure Change (days/mi)}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Round table values}
+\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Segment Distance}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Segment Distance}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 Pressure (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 Pressure (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2020 Pressure (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2020 Pressure (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Pressure Change (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Pressure Change (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Reset table index}
+\PY{n}{table\PYZus{}data\PYZus{}permile} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{index} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{index} \PY{o}{+} \PY{l+m+mi}{1}
+
+\PY{c+c1}{\PYZsh{} THIS IS NOT MY CODE}
+\PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{} Combined figure: table on the left, bar chart on the right \PYZhy{}\PYZhy{}\PYZhy{}}
+\PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,} \PY{n}{ax2}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.3} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Left: styled table}
+\PY{n}{ax1}\PY{o}{.}\PY{n}{axis}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{off}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{tbl} \PY{o}{=} \PY{n}{ax1}\PY{o}{.}\PY{n}{table}\PY{p}{(}
+    \PY{n}{cellText}\PY{o}{=}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{values}\PY{p}{,}
+    \PY{n}{colLabels}\PY{o}{=}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{columns}\PY{p}{,}
+    \PY{n}{rowLabels}\PY{o}{=}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{index}\PY{p}{,}
+    \PY{n}{cellLoc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{loc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{auto\PYZus{}set\PYZus{}font\PYZus{}size}\PY{p}{(}\PY{k+kc}{False}\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{set\PYZus{}fontsize}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{scale}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{1.3}\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{auto\PYZus{}set\PYZus{}column\PYZus{}width}\PY{p}{(}\PY{n}{col}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{tbl}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}facecolor}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}2E6F9E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{tbl}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}text\PYZus{}props}\PY{p}{(}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{weight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{color} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}F2F2F0}\PY{l+s+s2}{\PYZdq{}} \PY{k}{if} \PY{n}{row} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2} \PY{o}{==} \PY{l+m+mi}{0} \PY{k}{else} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}permile}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{tbl}\PY{p}{[}\PY{n}{row}\PY{p}{,} \PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}facecolor}\PY{p}{(}\PY{n}{color}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} ABOVE IS NOT MY CODE}
+
+\PY{n}{ax1}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Change in Angling Pressure per Stream Mile by River, 2019 to 2020}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{pad}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{100000000000000000}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Right: bar chart \PYZhy{} plot river name and angling increase per mile}
+\PY{n}{colors} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}4393C3}\PY{l+s+s2}{\PYZdq{}} \PY{k}{if} \PY{n}{v} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{k}{else} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}D6604D}\PY{l+s+s2}{\PYZdq{}} \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{upper\PYZus{}quartile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{]}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{n}{upper\PYZus{}quartile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{upper\PYZus{}quartile}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{chg\PYZus{}per\PYZus{}mi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Change in angling pressure per stream mile (days/mi)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Rivers with the Largest Increases in Angling Pressure, 2019 to 2020}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{axvline}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mf}{0.8}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Project1_files/Project1_16_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Table 1. River segment length (miles), alongside relative angling
+pressure (days/mi) in 2019 to 2020, and the change in pressure between
+years.
+
+Figure 2. Change in angling pressure per stream mile (days/mi) in 2019
+and 2020 for the 10 rivers with the largest increase.
+
+    \hypertarget{discussion---second-iteration}{%
+\subsection{Discussion - Second
+Iteration}\label{discussion---second-iteration}}
+
+When looking more closely at the data, you can see from the map and the
+table/chart above that rivers with less pressure per mile tend to be
+longer - which raises the question of whether this reflects a true
+pattern or is simply a characteristic of river length itself. For
+example, after lakes and reservoirs were trimmed from the Upper
+Missouri, it lost 51\% of its length, shrinking the denominator of the
+per-mile calculation and inflating the resulting metric. The Upper
+Missouri showed the greatest increase of any river in this study,
+despite being one of the shortest. This effect is clear when looking at
+the gap between the Upper Missouri and the second-ranked Upper
+Yellowstone, which more than doubles (1254.4 vs.~574.6), while the
+remaining rivers show a relatively smooth decline in pressure.
+
+Looking closely at the table, some of the longest rivers show very
+little increase in angling pressure. I suspect this is because many of
+these longer rivers run through the eastern part of the state, where
+fisheries provide fewer angling opportunities and are generally less
+desirable - some carry little to no trout and contain mostly warm-water
+species. Typically, when we think of high-pressure rivers in Montana, we
+picture trout streams; however, I will explore different normalization
+methods below to see how the geospatial patterns might change.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Extract all features that have more than 6 access points (\PYZdq{}reliable\PYZdq{})}
+\PY{n}{table\PYZus{}data\PYZus{}access} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data\PYZus{}confidence}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{reliable}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Sort features that are \PYZdq{}reliable\PYZdq{} by percent change per access point in descending order}
+\PY{n}{table\PYZus{}data\PYZus{}access} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pct\PYZus{}change\PYZus{}access}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Specify columns in table and rename }
+\PY{n}{table\PYZus{}data\PYZus{}access} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{[}\PY{p}{[}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{count}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}per\PYZus{}access\PYZus{}19}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}per\PYZus{}access\PYZus{}20}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pct\PYZus{}change\PYZus{}access}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{count}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Access Points}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}per\PYZus{}access\PYZus{}19}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{press\PYZus{}per\PYZus{}access\PYZus{}20}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2020 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pct\PYZus{}change\PYZus{}access}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Round table data}
+\PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2020 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2020 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Reset table index}
+\PY{n}{table\PYZus{}data\PYZus{}access} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{index} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{index} \PY{o}{+} \PY{l+m+mi}{1}
+
+\PY{n}{plot\PYZus{}table} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} THIS IS NOT MY CODE}
+\PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{n}{ax1}\PY{p}{,} \PY{n}{ax2}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.35} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Left: styled table}
+\PY{n}{ax1}\PY{o}{.}\PY{n}{axis}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{off}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{tbl} \PY{o}{=} \PY{n}{ax1}\PY{o}{.}\PY{n}{table}\PY{p}{(}
+    \PY{n}{cellText}\PY{o}{=}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{values}\PY{p}{,}
+    \PY{n}{colLabels}\PY{o}{=}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{columns}\PY{p}{,}
+    \PY{n}{rowLabels}\PY{o}{=}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{index}\PY{p}{,}
+    \PY{n}{cellLoc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{loc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{upper center}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{auto\PYZus{}set\PYZus{}font\PYZus{}size}\PY{p}{(}\PY{k+kc}{False}\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{set\PYZus{}fontsize}\PY{p}{(}\PY{l+m+mi}{9}\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{scale}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{1.4}\PY{p}{)}
+\PY{n}{tbl}\PY{o}{.}\PY{n}{auto\PYZus{}set\PYZus{}column\PYZus{}width}\PY{p}{(}\PY{n}{col}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{tbl}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}facecolor}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}2E6F9E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{tbl}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}text\PYZus{}props}\PY{p}{(}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{weight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{color} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}F2F2F0}\PY{l+s+s2}{\PYZdq{}} \PY{k}{if} \PY{n}{row} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2} \PY{o}{==} \PY{l+m+mi}{0} \PY{k}{else} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{tbl}\PY{p}{[}\PY{n}{row}\PY{p}{,} \PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}facecolor}\PY{p}{(}\PY{n}{color}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} ABOVE IS NOT MY CODE}
+
+\PY{n}{ax1}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Angling Pressure per Access Point by River, 2019 to 2020}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Right: bar chart \PYZhy{} plot river name and increase pressure per access point}
+\PY{n}{colors} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}4393C3}\PY{l+s+s2}{\PYZdq{}} \PY{k}{if} \PY{n}{v} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{k}{else} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}D6604D}\PY{l+s+s2}{\PYZdq{}} \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{plot\PYZus{}table}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{]}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{n}{plot\PYZus{}table}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{plot\PYZus{}table}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Percent change in angling pressure per access point}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Percent Change in Angling Pressure per Access Point, 2019 to 2020}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{axvline}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mf}{0.8}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Project1_files/Project1_19_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Table 2 (Left). Angling pressure (days/access point) for the 14 Montana
+Rivers with 6 or more FWP access points, sorted by percent change in
+descending order.
+
+Figure 3 (Right). Relationship between the percent change in angling
+pressure for each of the 14 Montana rivers with 6 or more FWP fishing
+access points.
+
+    \hypertarget{discussion---third-iteration}{%
+\subsection{Discussion - Third
+Iteration}\label{discussion---third-iteration}}
+
+This view adds a ranked, numeric list that allows for direct comparisons
+of the magnitude of percent change in angling pressure - comparisons
+that aren't possible from the map alone. The Beaverhead and Jefferson
+rank at the top and share similar characteristics: both lie in
+southwestern Montana and have moderate access counts relative to the
+rest of the list. The Bighorn is the clearest outlier in this data, and
+is the only river that showed a decrease in angling pressure. I have a
+few ideas about why, which I'll discuss later. Whether these rankings
+relate to how popular each river already was in 2019 is worth checking -
+see that comparison below.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Create copy of plot data}
+\PY{n}{plot\PYZus{}data} \PY{o}{=} \PY{n}{table\PYZus{}data\PYZus{}access}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} define x and y axis data}
+\PY{n}{x} \PY{o}{=} \PY{n}{plot\PYZus{}data}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{y} \PY{o}{=} \PY{n}{plot\PYZus{}data}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Color points by direction of change, matching your above maps}
+\PY{n}{colors} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}4393C3}\PY{l+s+s2}{\PYZdq{}} \PY{k}{if} \PY{n}{v} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0} \PY{k}{else} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}D6604D}\PY{l+s+s2}{\PYZdq{}} \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{y}\PY{p}{]}
+\PY{n}{ax}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors}\PY{p}{,} \PY{n}{s}\PY{o}{=}\PY{l+m+mi}{90}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{custom\PYZus{}offsets} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Middle Clark Fork River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Middle Yellowstone River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{12}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Blackfoot River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Lower Yellowstone River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{55}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Gallatin River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Bighorn River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+\PY{n}{default\PYZus{}offset} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Label points }
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{row} \PY{o+ow}{in} \PY{n}{plot\PYZus{}data}\PY{o}{.}\PY{n}{iterrows}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{offset} \PY{o}{=} \PY{n}{custom\PYZus{}offsets}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{default\PYZus{}offset}\PY{p}{)}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}
+        \PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+        \PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{ Change}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+        \PY{n}{textcoords}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{offset points}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{n}{xytext}\PY{o}{=}\PY{n}{offset}\PY{p}{,}
+        \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{8}\PY{p}{,}
+        \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}333333}\PY{l+s+s2}{\PYZdq{}}
+    \PY{p}{)}
+    
+\PY{c+c1}{\PYZsh{} Label and style the scatterplot }
+\PY{n}{ax}\PY{o}{.}\PY{n}{axhline}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mf}{0.8}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 pressure per access point (days/access pt)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Percent change, 2019 to 2020 (}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2019 Popularity vs. 2020 Percent Change in Angling Pressure per Access Point}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Style plot (help from claude)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}\PYZhy{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.3}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{spines}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{top}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}visible}\PY{p}{(}\PY{k+kc}{False}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{spines}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{right}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}visible}\PY{p}{(}\PY{k+kc}{False}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Project1_files/Project1_22_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Figure 4. Relationship between 2019 baseline angling pressure per access
+point and percent change in pressure from 2019 to 2020, for the fourteen
+rivers with six or more FWP access points. Each point represents one
+river; color indicates direction of change, matching the convention used
+throughout this analysis.
+
+    \hypertarget{discussion---fourth-iteration}{%
+\subsubsection{Discussion - Fourth
+Iteration}\label{discussion---fourth-iteration}}
+
+There is a strong negative correlation between 2019 pressure per access
+point and the percent change from 2019 to 2020. The scatterplot above
+shows that in general, rivers with lower 2019 pressure showed large
+percentage increases in 2020. While this doesn't prove that more remote
+rivers showed a large increase in angling pressure, it does provide
+evidence that less popular rivers showed a large increase in angling
+pressure. Setting the Bighorn River aside, the Gallatin and Madison
+rivers were the most popular in 2019 and showed a relatively modest
+increase in fishing pressure - further evidence that anglers sought out
+less popular waters in 2020. The limitation of this study is sample size
+- fourteen rivers is a small dataset, and a strong correlation drawn
+from so few points should be viewed cautiously.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} I USED CLAUDE TO HELP WITH SEGMENTS OF THIS CODE BUT HAVE TAKEN THE TIME TO COMMENT OUT AND UNDERSTAND}
+
+\PY{k+kn}{import} \PY{n+nn}{warnings}
+\PY{n}{warnings}\PY{o}{.}\PY{n}{filterwarnings}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ignore}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{message}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{This figure includes Axes that are not compatible with tight\PYZus{}layout}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Read in drainage and city geospatial data}
+\PY{n}{drainages} \PY{o}{=} \PY{n}{gpd}\PY{o}{.}\PY{n}{read\PYZus{}file}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../Data/fwp\PYZus{}drainages\PYZus{}6514\PYZus{}geomfix.gpkg}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{cities} \PY{o}{=} \PY{n}{gpd}\PY{o}{.}\PY{n}{read\PYZus{}file}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../Data/montana\PYZus{}cities\PYZus{}POINT.gpkg}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Create a copy of the river and pressure data}
+\PY{n}{pressure\PYZus{}by\PYZus{}drainage} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stream\PYZus{}pressure\PYZus{}2019}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stream\PYZus{}pressure\PYZus{}2020}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Calculate the 25th percentile for baseline threshold}
+\PY{n}{MIN\PYZus{}BASELINE} \PY{o}{=} \PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stream\PYZus{}pressure\PYZus{}2019}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{quantile}\PY{p}{(}\PY{l+m+mf}{0.25}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Calculate the \PYZpc{} change in angling pressure from 2019 to 2020 that were above the 25th percentile}
+\PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pct\PYZus{}change\PYZus{}pressure}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{nan}
+\PY{n}{reliable\PYZus{}mask} \PY{o}{=} \PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stream\PYZus{}pressure\PYZus{}2019}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{n}{MIN\PYZus{}BASELINE}
+\PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{reliable\PYZus{}mask}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pct\PYZus{}change\PYZus{}pressure}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{p}{(}
+    \PY{p}{(}\PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{reliable\PYZus{}mask}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stream\PYZus{}pressure\PYZus{}2020}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} 
+     \PY{o}{\PYZhy{}} \PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{reliable\PYZus{}mask}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stream\PYZus{}pressure\PYZus{}2019}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+    \PY{o}{/} \PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{reliable\PYZus{}mask}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stream\PYZus{}pressure\PYZus{}2019}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{*} \PY{l+m+mi}{100}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Join pressure\PYZus{}by\PYZus{}drainage to river/drainage name for cloropleth map}
+\PY{n}{choropleth\PYZus{}data} \PY{o}{=} \PY{n}{drainages}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{pressure\PYZus{}by\PYZus{}drainage}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{left}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Rearrange drainage labels to resolve labeling conflics}
+\PY{n}{drainage\PYZus{}offsets} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Middle Yellowstone River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Boulder River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{15}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ruby River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Madison River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Little Missouri River}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{9}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{90}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Missouri River \PYZhy{} Poplar}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{30}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{35}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+
+\PY{c+c1}{\PYZsh{} Skip these labels }
+\PY{n}{default\PYZus{}drainage\PYZus{}offset} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{skip\PYZus{}labels} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NA \PYZhy{} St. Mary and Belly Rivers}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NA \PYZhy{} Milk River Headwaters}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}
+
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Configure graduated scale bar for \PYZpc{}change in angling pressure}
+\PY{n}{palette\PYZus{}colors} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}053061}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}4393C3}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}F7F7F7}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}FDDBC7}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}F4A582}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}D6604D}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}B2182B}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}8B0000}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{stops} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.0}\PY{p}{,} \PY{l+m+mf}{0.45}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.55}\PY{p}{,} \PY{l+m+mf}{0.65}\PY{p}{,} \PY{l+m+mf}{0.75}\PY{p}{,} \PY{l+m+mf}{0.9}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{]}
+\PY{n}{cmap} \PY{o}{=} \PY{n}{mcolors}\PY{o}{.}\PY{n}{LinearSegmentedColormap}\PY{o}{.}\PY{n}{from\PYZus{}list}\PY{p}{(}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{custom\PYZus{}pctchange}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{zip}\PY{p}{(}\PY{n}{stops}\PY{p}{,} \PY{n}{palette\PYZus{}colors}\PY{p}{)}\PY{p}{)}
+\PY{p}{)}
+\PY{n}{norm} \PY{o}{=} \PY{n}{mcolors}\PY{o}{.}\PY{n}{TwoSlopeNorm}\PY{p}{(}\PY{n}{vmin}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{vcenter}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{vmax}\PY{o}{=}\PY{l+m+mi}{125}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Plot map (help styling from claude)}
+\PY{n}{choropleth\PYZus{}data}\PY{o}{.}\PY{n}{plot}\PY{p}{(}
+    \PY{n}{column}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pct\PYZus{}change\PYZus{}pressure}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{cmap}\PY{o}{=}\PY{n}{cmap}\PY{p}{,}
+    \PY{n}{norm}\PY{o}{=}\PY{n}{norm}\PY{p}{,}
+    \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{,}
+    \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{legend}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,}
+    \PY{n}{ax}\PY{o}{=}\PY{n}{ax}\PY{p}{,}
+    \PY{n}{missing\PYZus{}kwds}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{color}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{lightgrey}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{label}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Below 25th percentile baseline}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Label data (help from claude) BELOW}
+\PY{k}{for} \PY{n}{idx}\PY{p}{,} \PY{n}{row} \PY{o+ow}{in} \PY{n}{choropleth\PYZus{}data}\PY{o}{.}\PY{n}{iterrows}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{geometry}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{area} \PY{o}{\PYZgt{}} \PY{l+m+mf}{5e8} \PY{o+ow}{and} \PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{skip\PYZus{}labels}\PY{p}{:}
+        \PY{n}{centroid} \PY{o}{=} \PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{geometry}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{representative\PYZus{}point}\PY{p}{(}\PY{p}{)}
+        \PY{n}{offset} \PY{o}{=} \PY{n}{drainage\PYZus{}offsets}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{default\PYZus{}drainage\PYZus{}offset}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}
+            \PY{n}{text}\PY{o}{=}\PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DRAINNAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+            \PY{n}{xy}\PY{o}{=}\PY{p}{(}\PY{n}{centroid}\PY{o}{.}\PY{n}{x}\PY{p}{,} \PY{n}{centroid}\PY{o}{.}\PY{n}{y}\PY{p}{)}\PY{p}{,}
+            \PY{n}{xytext}\PY{o}{=}\PY{n}{offset}\PY{p}{,}
+            \PY{n}{textcoords}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{offset points}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{n}{ha}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{6}\PY{p}{,}
+            \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{n}{path\PYZus{}effects}\PY{o}{=}\PY{p}{[}\PY{n}{pe}\PY{o}{.}\PY{n}{withStroke}\PY{p}{(}\PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{foreground}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{]}
+        \PY{p}{)}
+
+\PY{n}{city\PYZus{}offsets} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Kalispell}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Missoula}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{35}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{12}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Great Falls}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Helena}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Bozeman}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{12}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Billings}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Butte}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{25}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{7}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+\PY{n}{default\PYZus{}city\PYZus{}offset} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+
+\PY{n}{cities}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{ax}\PY{o}{=}\PY{n}{ax}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{25}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{)}
+\PY{k}{for} \PY{n}{idx}\PY{p}{,} \PY{n}{row} \PY{o+ow}{in} \PY{n}{cities}\PY{o}{.}\PY{n}{iterrows}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{pt} \PY{o}{=} \PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{geometry}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{centroid}
+    \PY{n}{offset} \PY{o}{=} \PY{n}{city\PYZus{}offsets}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{default\PYZus{}city\PYZus{}offset}\PY{p}{)}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}
+        \PY{n}{text}\PY{o}{=}\PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NAME}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+        \PY{n}{xy}\PY{o}{=}\PY{p}{(}\PY{n}{pt}\PY{o}{.}\PY{n}{x}\PY{p}{,} \PY{n}{pt}\PY{o}{.}\PY{n}{y}\PY{p}{)}\PY{p}{,}
+        \PY{n}{xytext}\PY{o}{=}\PY{n}{offset}\PY{p}{,}
+        \PY{n}{textcoords}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{offset points}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{7}\PY{p}{,}
+        \PY{n}{weight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{n}{path\PYZus{}effects}\PY{o}{=}\PY{p}{[}\PY{n}{pe}\PY{o}{.}\PY{n}{withStroke}\PY{p}{(}\PY{n}{linewidth}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{,} \PY{n}{foreground}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{]}
+    \PY{p}{)}
+\PY{c+c1}{\PYZsh{} Label data (help from claude) ABOVE}
+
+\PY{c+c1}{\PYZsh{} Style and place graduated color ramp (help from claude) BELOW}
+\PY{n}{cax} \PY{o}{=} \PY{n}{inset\PYZus{}axes}\PY{p}{(}\PY{n}{ax}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{30}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{loc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center right}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                  \PY{n}{bbox\PYZus{}to\PYZus{}anchor}\PY{o}{=}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.02}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{bbox\PYZus{}transform}\PY{o}{=}\PY{n}{ax}\PY{o}{.}\PY{n}{transAxes}\PY{p}{,} \PY{n}{borderpad}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{sm} \PY{o}{=} \PY{n}{cm}\PY{o}{.}\PY{n}{ScalarMappable}\PY{p}{(}\PY{n}{norm}\PY{o}{=}\PY{n}{norm}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{n}{cmap}\PY{p}{)}
+\PY{n}{sm}\PY{o}{.}\PY{n}{set\PYZus{}array}\PY{p}{(}\PY{p}{[}\PY{p}{]}\PY{p}{)}
+\PY{n}{cbar} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{n}{sm}\PY{p}{,} \PY{n}{cax}\PY{o}{=}\PY{n}{cax}\PY{p}{)}
+\PY{n}{cbar}\PY{o}{.}\PY{n}{set\PYZus{}label}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Percent Change in Angling Pressure (}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{8}\PY{p}{)}
+\PY{n}{cbar}\PY{o}{.}\PY{n}{ax}\PY{o}{.}\PY{n}{tick\PYZus{}params}\PY{p}{(}\PY{n}{labelsize}\PY{o}{=}\PY{l+m+mi}{7}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Style and place graduated color ramp (help from claude) ABOVE}
+
+\PY{c+c1}{\PYZsh{} Add patch for drainages below 25th percentile}
+\PY{n}{nodata\PYZus{}patch} \PY{o}{=} \PY{n}{mpatches}\PY{o}{.}\PY{n}{Patch}\PY{p}{(}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{lightgrey}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Below 25th percentile baseline}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{handles}\PY{o}{=}\PY{p}{[}\PY{n}{nodata\PYZus{}patch}\PY{p}{]}\PY{p}{,} \PY{n}{loc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center right}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+          \PY{n}{bbox\PYZus{}to\PYZus{}anchor}\PY{o}{=}\PY{p}{(}\PY{l+m+mf}{0.105}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.64}\PY{p}{)}\PY{p}{,} \PY{n}{bbox\PYZus{}transform}\PY{o}{=}\PY{n}{ax}\PY{o}{.}\PY{n}{transAxes}\PY{p}{,}
+          \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{7}\PY{p}{,} \PY{n}{frameon}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Scale bar for map (help from claude) BELOW}
+\PY{n}{xlim} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{get\PYZus{}xlim}\PY{p}{(}\PY{p}{)}
+\PY{n}{ylim} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{get\PYZus{}ylim}\PY{p}{(}\PY{p}{)}
+\PY{n}{bar\PYZus{}x0} \PY{o}{=} \PY{n}{xlim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{p}{(}\PY{n}{xlim}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{xlim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.03}
+\PY{n}{bar\PYZus{}y0} \PY{o}{=} \PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{p}{(}\PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.03}
+\PY{n}{segment\PYZus{}m} \PY{o}{=} \PY{l+m+mi}{100\PYZus{}000}
+\PY{n}{bar\PYZus{}height} \PY{o}{=} \PY{p}{(}\PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.012}
+
+\PY{n}{ax}\PY{o}{.}\PY{n}{add\PYZus{}patch}\PY{p}{(}\PY{n}{mpatches}\PY{o}{.}\PY{n}{Rectangle}\PY{p}{(}\PY{p}{(}\PY{n}{bar\PYZus{}x0}\PY{p}{,} \PY{n}{bar\PYZus{}y0}\PY{p}{)}\PY{p}{,} \PY{n}{segment\PYZus{}m}\PY{p}{,} \PY{n}{bar\PYZus{}height}\PY{p}{,}
+                                 \PY{n}{facecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{add\PYZus{}patch}\PY{p}{(}\PY{n}{mpatches}\PY{o}{.}\PY{n}{Rectangle}\PY{p}{(}\PY{p}{(}\PY{n}{bar\PYZus{}x0} \PY{o}{+} \PY{n}{segment\PYZus{}m}\PY{p}{,} \PY{n}{bar\PYZus{}y0}\PY{p}{)}\PY{p}{,} \PY{n}{segment\PYZus{}m}\PY{p}{,} \PY{n}{bar\PYZus{}height}\PY{p}{,}
+                                 \PY{n}{facecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{label} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{100}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{200 km}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{text}\PY{p}{(}\PY{n}{bar\PYZus{}x0} \PY{o}{+} \PY{n}{i} \PY{o}{*} \PY{n}{segment\PYZus{}m}\PY{p}{,} \PY{n}{bar\PYZus{}y0} \PY{o}{\PYZhy{}} \PY{n}{bar\PYZus{}height} \PY{o}{*} \PY{l+m+mf}{1.5}\PY{p}{,} \PY{n}{label}\PY{p}{,}
+            \PY{n}{ha}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{7}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{6}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Scale bar for map (help from claude) ABOVE}
+
+\PY{c+c1}{\PYZsh{} North arrow for map (help from claude) BELOW}
+\PY{n}{compass\PYZus{}cx} \PY{o}{=} \PY{n}{bar\PYZus{}x0}
+\PY{n}{compass\PYZus{}base\PYZus{}y} \PY{o}{=} \PY{n}{bar\PYZus{}y0} \PY{o}{+} \PY{p}{(}\PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.05}
+\PY{n}{compass\PYZus{}half\PYZus{}w} \PY{o}{=} \PY{p}{(}\PY{n}{xlim}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{xlim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.008}
+\PY{n}{compass\PYZus{}h} \PY{o}{=} \PY{p}{(}\PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{ylim}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{l+m+mf}{0.05}
+
+\PY{n}{ax}\PY{o}{.}\PY{n}{add\PYZus{}patch}\PY{p}{(}\PY{n}{mpatches}\PY{o}{.}\PY{n}{Polygon}\PY{p}{(}
+    \PY{p}{[}\PY{p}{(}\PY{n}{compass\PYZus{}cx}\PY{p}{,} \PY{n}{compass\PYZus{}base\PYZus{}y} \PY{o}{+} \PY{n}{compass\PYZus{}h}\PY{p}{)}\PY{p}{,}
+     \PY{p}{(}\PY{n}{compass\PYZus{}cx} \PY{o}{\PYZhy{}} \PY{n}{compass\PYZus{}half\PYZus{}w}\PY{p}{,} \PY{n}{compass\PYZus{}base\PYZus{}y}\PY{p}{)}\PY{p}{,}
+     \PY{p}{(}\PY{n}{compass\PYZus{}cx} \PY{o}{+} \PY{n}{compass\PYZus{}half\PYZus{}w}\PY{p}{,} \PY{n}{compass\PYZus{}base\PYZus{}y}\PY{p}{)}\PY{p}{]}\PY{p}{,}
+    \PY{n}{closed}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{facecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{6}
+\PY{p}{)}\PY{p}{)}
+
+\PY{n}{ax}\PY{o}{.}\PY{n}{text}\PY{p}{(}\PY{n}{compass\PYZus{}cx}\PY{p}{,} \PY{n}{compass\PYZus{}base\PYZus{}y} \PY{o}{+} \PY{n}{compass\PYZus{}h} \PY{o}{*} \PY{l+m+mf}{1.15}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{N}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{n}{ha}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{center}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{va}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bottom}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{9}\PY{p}{,} \PY{n}{weight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{zorder}\PY{o}{=}\PY{l+m+mi}{6}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} North arrow for map (help from claude) ABOVE}
+
+\PY{c+c1}{\PYZsh{} Set title for map}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Percent Change in Total Angling Pressure by Drainage, 2019 to 2020}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}axis\PYZus{}off}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Project1_files/Project1_25_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    View 3. Statewide choropleth view of Montana showing percent change in
+angling pressure by FWP fisheries management drainage boundary,
+calculated directly from total angler-days rather than normalized by
+river length or access point count.
+
+    \hypertarget{discussion---final-iteration}{%
+\subsection{Discussion - Final
+Iteration}\label{discussion---final-iteration}}
+
+For the last iteration of this analysis, I am looking at raw total
+stream pressure per drainage, with no normalizing metric applied. The
+Tongue River drainage is the standout result in this view of the
+dataset. This view highlights something the other normalization metrics
+missed entirely. Despite being one of the longest rivers (211.7 miles)
+with only one access point, the Tongue River showed a 122.6\% increase
+--- from 10,626 days in 2019 to 23,653 days in 2020. This points to real
+limitations in the previous iterations of this analysis. Also
+noteworthy: the Upper Missouri River drainage shows a large increase
+here too, one that can no longer be attributed to ratio sensitivity.
+Perhaps aggregating raw total pressure at the drainage level, instead of
+dividing by either length or access count, is the most telling display
+of this data.
+
+The other outlier worth addressing is the Bighorn River drainage, which
+experienced a large decrease in angling pressure despite being a
+renowned fishery. The Bighorn flows through the heart of the Crow Indian
+Reservation, which enacted strict COVID-19 measures and discouraged
+non-tribal member recreational travel. In late March 2020, the Crow
+Tribe set up road checkpoints and issued a stay-at-home order
+restricting non-essential travel onto the reservation
+(\href{https://www.ktvq.com/news/coronavirus/crow-tribe-puts-up-road-side-checkpoints-to-curb-travel-to-reservation}{KTVQ,
+April 1, 2020}). Around the same time, the National Park Service closed
+its Bighorn River and Bighorn Reservoir boat ramps near Fort Smith at
+the request of Big Horn County, the Bureau of Reclamation, and the Crow
+Tribal Government
+(\href{https://billingsgazette.com/lifestyles/recreation/bighorn-canyon-nra-closes-boat-ramps-on-bighorn-river-reservoir/article_71a7dc8c-de96-5059-bf44-3be6ebf91879.html}{Billings
+Gazette, March 31, 2020}). It's reasonable to attribute the Bighorn's
+decline in angling pressure to these access restrictions.
+
+    \hypertarget{data-processing}{%
+\subsection{Data Processing}\label{data-processing}}
+
+To calculate percent change from the raw drainage-level pressure totals,
+I used the formula (2020 pressure − 2019 pressure) / 2019 pressure ×
+100. I calculated the 25th percentile of each drainage's 2019 baseline
+pressure and excluded drainages below that threshold. This exclusion
+omits drainages that had low baselines and were susceptible to a
+distorted percent change, similar to the access point threshold I set
+above.
+
+    \hypertarget{ai-appendix}{%
+\subsection{AI Appendix}\label{ai-appendix}}
+
+\textbf{Tool used:} Claude (Anthropic)
+
+\hypertarget{data-acquisition-and-processing}{%
+\subsubsection{Data Acquisition and
+Processing}\label{data-acquisition-and-processing}}
+
+\textbf{Prompt:} Write a prompt that will scrape data from the 2019
+Angling Pressure Survey and output it as a CSV file. Extract data from
+the table ``Angling Pressure in Angler Days by Drainage by Lake or
+Stream for the 2019 Survey License Year.'' I only want stream/river rows
+- omit all lake data. Scrape only the values under the ``Totals'' column
+heading.
+
+\textbf{Prompt:} I have fishing access site points, but some aren't on
+rivers, and the ones that are don't lie directly on the polyline ---
+there's no field that specifies river or not. In QGIS, find the nearest
+river line and nearest lake/reservoir polygon for each point, add the
+distances and matched river name as fields, and classify each point as
+river or lake based on whichever is closer.
+
+\textbf{Prompt:} Tell me how to build a query to filter feature layer
+attribute data in QGIS.
+
+\textbf{Prompt:} Tell me how to append fields from a CSV file to a
+vector feature layer in QGIS.
+
+\textbf{Prompt:} Tell me how to create new feature columns in QGIS.
+
+\textbf{Reflection:} Using GenAI to scrape data from the angler survey
+PDF documents saved significant time and let me verify the extracted
+totals against the source tables rather than manually re-typing them.
+Asking Claude questions while learning QGIS helped me pick up its
+functions much more quickly and in more depth than I would have working
+from documentation alone.
+
+\hypertarget{python-and-geopandas-reference}{%
+\subsubsection{Python and Geopandas
+Reference}\label{python-and-geopandas-reference}}
+
+\textbf{Prompt:} Give me a list of common matplotlib functions.
+
+\textbf{Prompt:} Give me a list of common matplotlib formatting
+functions.
+
+\textbf{Prompt:} Give me a list of common numpy functions.
+
+\textbf{Prompt:} Give me geopandas functions that are common when
+creating a table from a geopandas DataFrame.
+
+\textbf{Prompt:} Give me formatting functions when creating a table in
+geopandas.
+
+\textbf{Prompt:} Why am I getting a SettingWithCopyWarning when working
+with geopandas?
+
+\textbf{Prompt:} How do I set color constraints on a bar chart based on
+numeric value?
+
+\textbf{Prompt:} Give me the function that will break this bar chart up
+into data that lies in the lower quartile and the upper quartile.
+
+\textbf{Prompt:} How to center a plot in a Jupyter notebook.
+
+\textbf{Prompt:} Give me the tools typically used when building
+choropleth maps from a geopackage file.
+
+\textbf{Reflection:} I was able to extend my coding knowledge by
+querying GenAI for common functions and libraries in geopandas, numpy
+and matplotlib. While the choropleth map was beyond my ability, by
+having a conversation with GenAI I was able to learn new code and
+produce a meaningful map.
+
+\hypertarget{notebook-formatting}{%
+\subsubsection{Notebook Formatting}\label{notebook-formatting}}
+
+\textbf{Prompt:} Give me common formatting tools for markdown text in
+Jupyter notebooks.
+
+\textbf{Prompt:} How to add hyperlinks in markdown text.
+
+\textbf{Prompt:} Tell me how to add a PNG to a Jupyter notebook cell.
+
+\textbf{Prompt:} Tell me how to put two PNGs next to each other in a
+Jupyter notebook.
+
+\textbf{Reflection:} To be honest I don't find learning basic syntax for
+formatting plots, tables, and charts in python that interesting -
+leaving it to GenAI allows me to focus on the more interesting aspects
+of analysis.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
